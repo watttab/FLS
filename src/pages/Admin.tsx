@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../components/layout/Layout';
 import { useProjects, type Project } from '../hooks/useProjects';
-import { database } from '../lib/firebase';
+import { database, auth } from '../lib/firebase'; // Ensure auth is exported from firebase.ts
 import { ref, push, set, remove, update } from 'firebase/database';
-import { Lock, LogIn, Trash2, Edit, Plus, X } from 'lucide-react';
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged, type User } from 'firebase/auth';
+import { Lock, LogIn, Trash2, Edit, Plus, X, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Admin: React.FC = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [username, setUsername] = useState('');
+    const [user, setUser] = useState<User | null>(null);
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+
     const [isEditing, setIsEditing] = useState<string | null>(null);
     const [showForm, setShowForm] = useState(false);
 
@@ -24,20 +28,32 @@ const Admin: React.FC = () => {
 
     const { projects } = useProjects();
 
-    const handleLogin = (e: React.FormEvent) => {
+    // Check auth state on mount
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
+            setLoading(false);
+        });
+        return () => unsubscribe();
+    }, []);
+
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Hardcoded auth as per original requirement
-        if (username === 'admin' && password === 'iydgTvot19') {
-            setIsLoggedIn(true);
-        } else {
-            alert('ข้อมูลเข้าสู่ระบบไม่ถูกต้อง');
+        setError('');
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+        } catch (err: any) {
+            console.error(err);
+            setError('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
         }
     };
 
-    const handleLogout = () => {
-        setIsLoggedIn(false);
-        setUsername('');
-        setPassword('');
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -58,7 +74,7 @@ const Admin: React.FC = () => {
             closeForm();
         } catch (error) {
             console.error(error);
-            alert('เกิดข้อผิดพลาด');
+            alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     };
 
@@ -69,7 +85,7 @@ const Admin: React.FC = () => {
                 await remove(projectRef);
             } catch (error) {
                 console.error(error);
-                alert('เกิดข้อผิดพลาด');
+                alert('เกิดข้อผิดพลาดในการลบข้อมูล');
             }
         }
     };
@@ -102,7 +118,17 @@ const Admin: React.FC = () => {
         setIsEditing(null);
     };
 
-    if (!isLoggedIn) {
+    if (loading) {
+        return (
+            <Layout>
+                <div className="flex items-center justify-center min-h-[60vh]">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+                </div>
+            </Layout>
+        );
+    }
+
+    if (!user) {
         return (
             <Layout>
                 <div className="flex items-center justify-center min-h-[60vh] px-4">
@@ -116,17 +142,23 @@ const Admin: React.FC = () => {
                                 <Lock size={32} />
                             </div>
                             <h2 className="text-2xl font-bold text-slate-900">Admin Login</h2>
-                            <p className="text-sm text-slate-500 mt-2">สำหรับผู้ดูแลระบบเท่านั้น</p>
+                            <p className="text-sm text-slate-500 mt-2">กรุณาเข้าสู่ระบบด้วยบัญชีผู้ดูแลระบบ</p>
                         </div>
                         <form onSubmit={handleLogin} className="space-y-6">
+                            {error && (
+                                <div className="p-3 bg-red-50 text-red-600 text-sm rounded-lg text-center">
+                                    {error}
+                                </div>
+                            )}
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Username</label>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
                                 <input
-                                    type="text"
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
                                     required
+                                    placeholder="admin@example.com"
                                 />
                             </div>
                             <div>
@@ -137,6 +169,7 @@ const Admin: React.FC = () => {
                                     onChange={(e) => setPassword(e.target.value)}
                                     className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
                                     required
+                                    placeholder="••••••••"
                                 />
                             </div>
                             <button
@@ -157,7 +190,8 @@ const Admin: React.FC = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
                     <h1 className="text-3xl font-bold text-slate-900">Admin Dashboard</h1>
-                    <div className="flex space-x-4">
+                    <div className="flex space-x-4 items-center">
+                        <span className="text-sm text-slate-500 hidden md:inline-block mr-2">{user.email}</span>
                         <button
                             onClick={() => openForm()}
                             className="flex items-center space-x-2 bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/30"
@@ -168,6 +202,7 @@ const Admin: React.FC = () => {
                             onClick={handleLogout}
                             className="flex items-center space-x-2 bg-slate-200 text-slate-700 px-6 py-2 rounded-lg hover:bg-slate-300 transition"
                         >
+                            <LogOut size={18} />
                             <span>ออกจากระบบ</span>
                         </button>
                     </div>
