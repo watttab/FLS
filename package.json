@@ -2,6 +2,7 @@
   "name": "sparse-curiosity",
   "private": true,
   "version": "0.0.0",
+  "homepage": "https://watttab.github.io/FLS/",
   "type": "module",
   "scripts": {
     "dev": "vite",
