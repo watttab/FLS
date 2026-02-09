@@ -8,7 +8,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ['"Inter"', 'sans-serif'],
-        display: ['"Calistoga"', 'cursive'], // Example premium font
+        display: ['"Outfit"', 'sans-serif'], // Premium font for headings
       },
       colors: {
         primary: {
@@ -26,6 +26,7 @@ export default {
       animation: {
         'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
         'float': 'float 6s ease-in-out infinite',
+        'aurora': 'aurora 20s linear infinite',
       },
       keyframes: {
         fadeInUp: {
@@ -35,6 +36,10 @@ export default {
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-20px)' },
+        },
+        aurora: {
+          '0%': { backgroundPosition: '50% 50%, 50% 50%' },
+          '100%': { backgroundPosition: '350% 50%, 350% 50%' },
         }
       }
     },

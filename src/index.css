@@ -6,6 +6,7 @@
   html {
     scroll-behavior: smooth;
   }
+
   body {
     @apply bg-slate-50 text-slate-800 antialiased selection:bg-indigo-500 selection:text-white;
     font-feature-settings: "rlig" 1, "calt" 1;
@@ -16,7 +17,17 @@
   .glass {
     @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-xl;
   }
+
+  .glass-premium {
+    @apply bg-white/60 backdrop-blur-xl border border-white/40;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  }
+
   .glass-dark {
     @apply bg-slate-900/70 backdrop-blur-lg border border-slate-700/50 shadow-xl;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600;
   }
 }
