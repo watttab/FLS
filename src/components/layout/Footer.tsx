@@ -1,6 +1,8 @@
 import React from 'react';
 import { Facebook, Mail } from 'lucide-react';
 
+import VisitorCounter from '../VisitorCounter';
+
 const Footer: React.FC = () => {
     return (
         <footer className="bg-slate-900 text-white py-12 border-t border-slate-800">
@@ -33,10 +35,13 @@ const Footer: React.FC = () => {
                         </p>
                     </div>
                 </div>
-                <div className="border-t border-slate-800 mt-12 pt-8 text-center">
-                    <p className="text-slate-500 text-sm">
+                <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <p className="text-slate-500 text-sm order-2 md:order-1">
                         &copy; 2024 Free Learning Space by Wattanapong T. All rights reserved.
                     </p>
+                    <div className="order-1 md:order-2">
+                        <VisitorCounter />
+                    </div>
                 </div>
             </div>
         </footer>
