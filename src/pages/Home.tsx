@@ -44,10 +44,10 @@ const Home: React.FC = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
-                        className="font-sans text-xl md:text-2xl text-slate-600 max-w-2xl mx-auto mb-12 leading-relaxed"
+                        className="font-sans text-xl md:text-2xl text-slate-600 max-w-3xl mx-auto mb-12 leading-relaxed"
                     >
                         โดย <span className="font-semibold text-slate-800">Wattanapong Tabthanee (ครูโอ)</span> <br />
-                        พื้นที่สำหรับแบ่งปันความรู้ สื่อการสอน และผลงานต่างๆ ที่ได้สร้างสรรค์ขึ้น
+                        พื้นที่สำหรับแบ่งปันสื่อส่งเสริมการเรียนรู้ ชุดการเรียนรู้ ระบบดูแลช่วยเหลือครูและช่วยเหลือตนเองที่ได้สร้างสรรค์ขึ้น ^_^"
                     </motion.p>
 
                     <motion.div
@@ -55,8 +55,13 @@ const Home: React.FC = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4 }}
                     >
-                        <a href="#portfolio" className="inline-flex items-center space-x-3 bg-slate-900 text-white px-10 py-4 rounded-full hover:bg-slate-800 transition-all hover:scale-105 shadow-xl shadow-indigo-500/20 group">
-                            <span className="font-medium text-lg">ดูผลงาน</span>
+                        <a
+                            href="https://youtube.com/playlist?list=PLPkIU8lXBFXF8ziZKvLf2GTZ-VHrQkBX8&si=w0lVP271r5740De8"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center space-x-3 bg-red-600 text-white px-10 py-4 rounded-full hover:bg-red-700 transition-all hover:scale-105 shadow-xl shadow-red-500/20 group"
+                        >
+                            <span className="font-medium text-lg">ดูผลงาน (YouTube)</span>
                             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                         </a>
                     </motion.div>
