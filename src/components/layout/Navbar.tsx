@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Home, LayoutDashboard, Settings } from 'lucide-react';
+import { Menu, X, Home, LayoutDashboard } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
@@ -17,7 +17,6 @@ const Navbar: React.FC = () => {
     const navLinks = [
         { name: 'Home', path: '/', icon: Home },
         { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-        { name: 'Admin', path: '/admin', icon: Settings },
     ];
 
     return (
@@ -95,8 +94,8 @@ const Navbar: React.FC = () => {
                                         to={link.path}
                                         onClick={() => setMobileOpen(false)}
                                         className={`flex items-center space-x-3 px-3 py-3 rounded-md text-base font-medium ${isActive
-                                                ? 'bg-indigo-50 text-indigo-700'
-                                                : 'text-slate-600 hover:bg-slate-50 hover:text-indigo-600'
+                                            ? 'bg-indigo-50 text-indigo-700'
+                                            : 'text-slate-600 hover:bg-slate-50 hover:text-indigo-600'
                                             }`}
                                     >
                                         <Icon size={20} />
